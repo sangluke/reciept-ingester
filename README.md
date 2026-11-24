@@ -86,12 +86,6 @@ defaults write com.receipt-ingester Model claude-sonnet-5-5
 
 Go back with `defaults delete com.receipt-ingester Model`. Use a dedicated Console workspace with a monthly spend limit for this key.
 
-**Building and releasing.** GitHub Actions builds on macOS for every push and runs the tests. To publish a new download:
-
-```sh
-git tag v1.0.1 && git push origin v1.0.1
-```
-
-This creates a Release with `Receipt-Ingester.zip` attached, and the install link above always points to the latest one. After updating, macOS asks for the permissions again once, because each build gets a new ad-hoc signature.
+**Building and releasing.** GitHub Actions builds on macOS for every push and runs the tests. To publish a new download, go to **Releases → Draft a new release**, create a tag such as `v1.0.1`, and click **Publish release**. About a minute later `Receipt-Ingester.zip` is attached to it, and the install link above always points to the latest one. After updating, macOS asks for the permissions again once, because each build gets a new ad-hoc signature.
 
 **Tests.** `bash tests/test_ingest.sh` runs the helper against stand-ins for the macOS tools and the API (needs `python3`).
