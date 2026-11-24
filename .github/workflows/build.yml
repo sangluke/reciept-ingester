@@ -1,0 +1,49 @@
+name: Build
+
+# Every push builds and tests the app. Pushing a tag like v1.0.1 also publishes
+# a Release with Receipt-Ingester.zip attached.
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Offline tests
+        run: bash tests/test_ingest.sh
+
+      - name: Build app
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then export VERSION="${GITHUB_REF_NAME#v}"; fi
+          bash build.sh
+
+      - name: Smoke test on real macOS tools
+        run: |
+          # Converts a real image with sips and confirms a clear error when no API key is saved.
+          img=$(find /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources -name '*.icns' | head -1)
+          sips -s format png "$img" --out /tmp/test.png >/dev/null
+          out=$(bash "dist/Receipt Ingester.app/Contents/Resources/ingest.sh" process /tmp/test.png)
+          echo "$out"
+          echo "$out" | grep -q "No Claude API key is saved"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Receipt-Ingester
+          path: dist/Receipt-Ingester.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/Receipt-Ingester.zip
+          body: |
+            **To install:** download **Receipt-Ingester.zip** below, double-click it, and drag **Receipt Ingester** into your Applications folder.
+            See the [setup guide](https://github.com/${{ github.repository }}#readme) for first-time steps.
