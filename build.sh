@@ -14,6 +14,7 @@ mkdir -p dist
 # -s makes a stay-open app, so it keeps watching until it's quit.
 osacompile -s -o "$APP" src/ReceiptIngester.applescript
 cp src/ingest.sh "$APP/Contents/Resources/ingest.sh"
+cp src/AddToNumbers.applescript "$APP/Contents/Resources/AddToNumbers.applescript"
 chmod 755 "$APP/Contents/Resources/ingest.sh"
 
 plutil -replace CFBundleIdentifier -string "com.receipt-ingester.app" "$PLIST"

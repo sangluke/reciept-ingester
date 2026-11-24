@@ -72,7 +72,7 @@ While the app is open, **click its Dock icon** to change the API key or the spre
 
 ## For the maintainer
 
-**How it works.** `src/ReceiptIngester.applescript` is a stay-open applet that checks `~/Downloads` every 3 seconds for new images (JPG, PNG, HEIC). `src/ingest.sh` converts each photo to a JPEG at most 1568 px wide with `sips`, sends it to the Claude Messages API with a forced `record_receipt` tool call, validates the fields, and returns them. The applet then writes the row through Numbers' AppleScript support, so iCloud syncing behaves exactly as if it were typed by hand. Everything uses tools built into macOS. Nothing needs to be installed.
+**How it works.** `src/ReceiptIngester.applescript` is a stay-open applet (the Numbers part, `src/AddToNumbers.applescript`, is compiled on first use because it needs Numbers installed) that checks `~/Downloads` every 3 seconds for new images (JPG, PNG, HEIC). `src/ingest.sh` converts each photo to a JPEG at most 1568 px wide with `sips`, sends it to the Claude Messages API with a forced `record_receipt` tool call, validates the fields, and returns them. The applet then writes the row through Numbers' AppleScript support, so iCloud syncing behaves exactly as if it were typed by hand. Everything uses tools built into macOS. Nothing needs to be installed.
 
 **Column mapping.** Columns are found by heading text, so their order doesn't matter: *Business*, *Cost*, a heading containing *Date*, *Notes*, and a heading containing *Chq*, *Card* or *Payment (*. The first empty row is reused; otherwise a row is added above any footer rows. Rows whose Business contains "total" are left out of the running totals.
 
