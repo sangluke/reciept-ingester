@@ -37,16 +37,17 @@ PROMPT='You are reading a photo of a purchase receipt or invoice for a personal 
 TOOL='{"name":"record_receipt","description":"Record the details of one receipt.","input_schema":{"type":"object","properties":{"is_receipt":{"type":"boolean"},"multiple_receipts":{"type":"boolean"},"business":{"type":"string"},"total":{"type":"string"},"date":{"type":"string"},"items_summary":{"type":"string"},"card_last4":{"type":"string"}},"required":["is_receipt","multiple_receipts","business","total","date","items_summary","card_last4"]}}'
 
 scan() {
-  local marker="$1" f s1 s2
+  local marker="$1" f now changed size
   [ -e "$marker" ] || return 0
+  now=$(date +%s)
   find "$DOWNLOADS" -maxdepth 1 -type f ! -name '.*' -cnewer "$marker" \
     \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.heic' -o -iname '*.heif' \) \
     2>/dev/null | while IFS= read -r f; do
-      # Only hand over files that have finished arriving.
-      s1=$(stat -f %z "$f" 2>/dev/null) || continue
-      sleep 1
-      s2=$(stat -f %z "$f" 2>/dev/null) || continue
-      if [ "$s1" = "$s2" ] && [ "$s1" -gt 0 ]; then printf '%s\n' "$f"; fi
+      # Only hand over files that finished arriving at least 2 seconds ago (no waiting here,
+      # so the app stays responsive and can quit right away).
+      changed=$(stat -f %c "$f" 2>/dev/null) || continue
+      size=$(stat -f %z "$f" 2>/dev/null) || continue
+      if [ $((now - changed)) -ge 2 ] && [ "$size" -gt 0 ]; then printf '%s\n' "$f"; fi
     done
 }
 

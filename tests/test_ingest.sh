@@ -38,7 +38,7 @@ print(('true' if v else 'false') if isinstance(v,bool) else v)
 X
 cat > "$S/stat" <<'X'
 #!/usr/bin/env python3
-import os,sys; print(os.path.getsize(sys.argv[-1]))
+import os,sys; st=os.stat(sys.argv[-1]); print(int(st.st_ctime) if sys.argv[2]=='%c' else st.st_size)
 X
 chmod +x "$S"/*
 export RI_STUB_PATH="$S" RI_DOWNLOADS="$T/dl"
@@ -67,6 +67,8 @@ check "out of credit" "$(FAKE_CODE=400 bash "$H" process "$T/r.heic" | sed -n 2p
 
 touch "$T/marker"; sleep 1.1
 printf 'x' > "$T/dl/IMG_1.HEIC"; printf 'x' > "$T/dl/notes.pdf"; printf 'x' > "$T/dl/.hidden.jpg"
+check "scan waits for files to settle" "$(bash "$H" scan "$T/marker")" ""
+sleep 2.1
 check "scan finds new images only" "$(bash "$H" scan "$T/marker")" "$T/dl/IMG_1.HEIC"
 check "move" "$(bash "$H" move "$T/dl/IMG_1.HEIC" "$T/out/2026/11" '2026-11-23 Home Depot $42.18')" "$T/out/2026/11/2026-11-23 Home Depot \$42.18.heic"
 printf 'x' > "$T/dl/b.heic"

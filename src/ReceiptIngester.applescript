@@ -27,7 +27,7 @@ on run
 
 		set answer to display dialog "Receipt Ingester is ready." & return & return & ¬
 			"AirDrop receipt photos to this Mac and they'll be added to “" & my displayName(sheetPath) & "”." & return & return & ¬
-			"When you're done, quit Receipt Ingester from the Dock." buttons {"Settings…", "Start"} default button "Start" ¬
+			"When you're done, click its Dock icon and choose Turn off (or press ⌘Q)." buttons {"Settings…", "Start"} default button "Start" ¬
 			with title appName giving up after 10
 		if button returned of answer is "Settings…" then my showSettings()
 	on error errMsg number errNum
@@ -57,6 +57,7 @@ on idle
 		set found to {}
 	end try
 	repeat with f in found
+		if not isReady then exit repeat
 		set f to contents of f
 		if f is not "" and skippedFiles does not contain f then
 			try
@@ -71,7 +72,8 @@ on idle
 end idle
 
 on quit
-	if isReady then my notify("Receipt Ingester is off", "AirDropped photos won't be added until you open it again.", "")
+	-- Nothing here may block or fail, or the app can't close.
+	set isReady to false
 	continue quit
 end quit
 
@@ -136,11 +138,14 @@ end handleFile
 -- ───────────────────────── Setup & settings ─────────────────────────
 
 on showSettings()
-	set choice to choose from list {"Change Claude API key", "Choose a different spreadsheet"} ¬
+	set choice to choose from list {"Turn off Receipt Ingester", "Change Claude API key", "Choose a different spreadsheet"} ¬
 		with title appName with prompt "Adding receipts to:" & return & my displayName(sheetPath) & return & return & "What would you like to change?" ¬
 		OK button name "Change" cancel button name "Done"
 	if choice is false then return
-	if item 1 of choice is "Change Claude API key" then
+	if item 1 of choice is "Turn off Receipt Ingester" then
+		set isReady to false
+		tell me to quit
+	else if item 1 of choice is "Change Claude API key" then
 		my askForAPIKey()
 	else
 		my chooseSpreadsheet()

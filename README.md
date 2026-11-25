@@ -36,7 +36,7 @@ The original photo is filed in a **Receipts** folder next to your spreadsheet, s
 1. **Open Receipt Ingester.** Click **Start** (or wait a few seconds). A notification says it's on.
 2. **AirDrop your receipt photos** from your iPhone to the Mac. You can send several at once.
 3. **Watch for the notifications.** Each receipt takes a few seconds.
-4. **When you're done,** quit the app: right-click its icon in the Dock and choose **Quit** (or press ⌘Q).
+4. **When you're done,** turn it off: click its icon in the Dock and choose **Turn off Receipt Ingester** (or press ⌘Q, or right-click the Dock icon and choose **Quit**). The icon disappears from the Dock when it's off.
 
 The app only looks at photos that arrive *while it's open*. Old pictures in Downloads are never touched.
 
@@ -54,7 +54,7 @@ The app only looks at photos that arrive *while it's open*. Old pictures in Down
 
 ### Settings
 
-While the app is open, **click its Dock icon** to change the API key or the spreadsheet. You can also click **Settings…** on the start-up window.
+While the app is open, **click its Dock icon** to turn it off or change the API key or spreadsheet. You can also click **Settings…** on the start-up window.
 
 ---
 
