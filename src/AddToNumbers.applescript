@@ -81,12 +81,15 @@ on run {sheetPath, biz, costValue, ymd, itemNotes, last4}
 				set targetRow to lastBody + 1
 			end if
 			set value of cell bizCol of row targetRow to biz
+			set alignment of cell bizCol of row targetRow to right
+			set format of cell costCol of row targetRow to currency
 			set value of cell costCol of row targetRow to costValue
 			if dateCol > 0 and purchaseDate is not missing value then set value of cell dateCol of row targetRow to purchaseDate
 			if notesCol > 0 then set value of cell notesCol of row targetRow to itemNotes
 			if payCol > 0 and last4 is not "" then
 				set format of cell payCol of row targetRow to text
 				set value of cell payCol of row targetRow to last4
+				set alignment of cell payCol of row targetRow to center
 			end if
 		end tell
 		save doc
